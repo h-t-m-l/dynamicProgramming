@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DPtest</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"
+        integrity="sha512-sW/w8s4RWTdFFSduOTGtk4isV1+190E/GghVffMA9XczdJ2MDzSzLEubKAs5h0wzgSJOQTRYyaz73L3d6RtJSg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@next/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+</head>
+
+<body>
+    <canvas id="mychart"></canvas>
+
+    <script>
+        const x = [];
+        for (let i = 0; i < 200; i++) {
+            if (i == 0) {
+                x.push(Math.floor(Math.random() * 2));
+            } else {
+                if (x[i - 1] == 0) {
+                    if (Math.random() < 0.99) {
+                        x.push(0);
+                    } else {
+                        x.push(1);
+                    }
+                } else {
+                    if (Math.random() < 0.97) {
+                        x.push(1);
+                    } else {
+                        x.push(0);
+                    }
+                }
+            }
+        }
+
+        const y = [];
+        const sigma = 0.7;
+        for (let i = 0; i < 200; i++) {
+            y.push(Math.sqrt(-2 * Math.log(1 - Math.random())) * Math.cos(2 * Math.PI * Math.random()) * sigma + x[i]);
+        }
+
+        var ctx = document.getElementById('mychart');
+        var mychart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: x,
+                datasets: [{
+                    pointRadius: 0,
+                    label: 'x',
+                    data: x,
+                    bordercolor: '#484',
+                }, {
+                    type: 'bubble',
+                    label: 'y',
+                    data: y,
+                    bordercolor: '#484',
+                }],
+
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        display: false,
+                    },
+                    y: {
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

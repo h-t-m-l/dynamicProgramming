@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+
+<head>
+  <meta charset="utf-8">
+　<title>Chart.jsによる波形描画テスト</title>
+</head>
+
+<body>
+  <h1>Chart.jsによる波形描画テスト</h1>
+  <HR>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+    <canvas id="Chart1" width="auto" height="auto"></canvas>
+    <script>
+      chartVal = [];     // グラフのデータを保持
+      chartConfig = {    // グラフの描画パラメータを保持
+          type: 'scatter',
+            data: {
+              datasets: [{
+                label: 'sin' ,showLine: true ,lineTension: 0 ,fill: false ,
+                borderColor: "rgba(  0,  0,255,0.5)"　,borderWidth: 1　,pointRadius: 1 ,data : chartVal
+              }]},
+            options:{
+              scales:{
+                xAxes: [{
+                  gridLines: { color: "rgba(255, 0, 0, 0.2)", zeroLineColor: "black"    },
+                  type: 'time',
+                  time: { unit: 'second', displayFormats: { second: 'H:mm:ss' }, },
+                }],
+                  yAxes: [{
+                    ticks :{
+                      userCallback: function(tick) {
+                        return tick.toString() + 'V'
+                      }
+                    },
+                    gridLines: { color: "rgba(0, 0, 255, 0.2)", zeroLineColor: "black" },
+                }]
+              },
+              animation: false
+            }
+        };
+
+      // グラフ描画処理
+      function drawChart() {
+	    var context = document.getElementById('Chart1');
+	    window.Chart1 = new Chart(context, chartConfig); // グラフのインスタンスをグローバル変数で生成
+      }
+
+      function Redraw() {
+        if (Chart1) { Chart1.destroy(); } // すでにグラフ（インスタンス）が生成されている場合は、グラフを破棄する
+        drawChart(); // グラフを再描画
+	  }
+
+      drawChart();
+
+      function Update() {
+        chartVal.push({x:Date.now(),y: 10 * Math.sin(2 * Math.PI * Date.now() / 5000 )}) // 最後に5秒周期の正弦波データを付加する。
+        if(chartVal.length > 100) chartVal.shift();  // 要素数が100以上の時は先頭のデータを破棄する
+        Redraw();
+	  }
+
+//    timerID = setInterval( Update , 100);  // 100ms周期
+
+      </script>
+      <!-- グラフ更新ボタン -->
+      <button type="button" id="btn1">更新開始</button>
+      <script>
+      document.getElementById('btn1').onclick = function() {
+        timerID = setInterval( Update , 100);  // 100ms周期
+      }
+      </script>
+      <button type="button" id="btn2">更新停止</button>
+      <script>
+      document.getElementById('btn2').onclick = function() {
+        clearInterval(timerID);
+      }	
+      </script>
+</body>
+</html>
